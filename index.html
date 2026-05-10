@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Rehab Plan</title>
+
+<!-- PWA / iOS home-screen -->
+<meta name="theme-color" content="#F2EDE3" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="apple-mobile-web-app-title" content="Plan" />
+<meta name="mobile-web-app-capable" content="yes" />
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='40' fill='%23F2EDE3'/%3E%3Ccircle cx='90' cy='90' r='34' fill='none' stroke='%232C4A3E' stroke-width='6'/%3E%3Cpath d='M76 90 l10 10 l18 -22' stroke='%232C4A3E' stroke-width='6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..600&family=DM+Sans:wght@300..600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+<!-- React + Babel from CDN. Babel transpiles the JSX below in the browser. -->
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+<style>
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; background: #F2EDE3; }
+  body { font-family: 'DM Sans', system-ui, sans-serif; color: #1A1A18; min-height: 100vh; padding-bottom: env(safe-area-inset-bottom); }
+  .serif { font-family: 'Fraunces', Georgia, serif; font-optical-sizing: auto; font-variation-settings: 'opsz' 36, 'SOFT' 50; }
+  .mono { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+  .fade { animation: fade 0.28s ease both; }
+  @keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+  button { font-family: inherit; }
+  button:focus-visible { outline: 2px solid #2C4A3E; outline-offset: 3px; border-radius: 4px; }
+  .row:active { background: rgba(0,0,0,0.025); }
+  #root { padding-top: env(safe-area-inset-top); }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+const { useState, useEffect } = React;
+
+const PLAN = [
+  {
+    key: 'running',
+    title: 'Running',
+    subtitle: 'Add a 4th run this week. +10% volume next week.',
+    items: [
+      { id: 'run-easy-1', title: 'Easy run', spec: 'Conversation pace', cues: ['Nasal-breathing effort', 'Stays at conversation pace from start to finish'], video: null },
+      { id: 'run-easy-2', title: 'Easy run', spec: 'Conversation pace', cues: ['Nasal-breathing effort', 'Second easy day of the week'], video: null },
+      { id: 'run-effort', title: 'Effort session', spec: 'Track or tempo', cues: ['Per coach plan: intervals or sustained tempo', 'Quality day of the week'], video: null },
+      { id: 'run-long', title: 'Long run', spec: 'Aerobic base', cues: ['Easy effort, time on feet', 'Marathon-specific endurance build'], video: null },
+      { id: 'run-bridge', title: 'Bridge run', spec: '1× per week · elevation work', cues: ['Specific prep for the NYC course bridges and rolling elevation', 'Can substitute for an easy or long run'], video: null }
+    ]
+  },
+  {
+    key: 'workoutA',
+    title: 'Workout A',
+    subtitle: 'Non-running day · primary drills',
+    items: [
+      { id: 'a-deadlift', title: 'Hex bar deadlift', spec: '3 × 8–10 · 2 min rest', cues: ['Stand tall before the lift, brace the trunk', 'Drive through the full foot, including the heel'], video: null },
+      { id: 'a-step', title: 'Step up and over', spec: '3 × 10', cues: ['Drive the knee over the foot', 'Control alignment of knee and ankle on the way up and down', 'Right foot points forward, not out'], video: { id: 'hP4jBnUeB18', short: false } },
+      { id: 'a-bsq', title: 'Bulgarian split squat', spec: '3 × 8 · 2× DB · 1 min rest', cues: ['Upright trunk', 'Drive the knee over the foot, pointing forward', 'Maximize knee translation over foot to promote ankle mobility'], video: { id: 'Gpkzq1HuhJ0', short: false } },
+      { id: 'a-calf', title: 'Single-leg calf raise', spec: '3 × 8 · 20 lb · 30 bpm', cues: ['Hold the weight on the side of the working leg', 'Match tempo to a 30 bpm metronome', 'Next week: progress to 3 × 10–12 reps'], video: { id: 'YCmLU4JoFac', short: false } }
+    ]
+  },
+  {
+    key: 'workoutB',
+    title: 'Workout B',
+    subtitle: 'Non-running day · primary drills',
+    items: [
+      { id: 'b-carry', title: 'Loaded carry march', spec: '4 × 45s on / 45s rest · 2× DB', cues: ['Maintain upright posture and steady cadence', 'Trunk braced throughout'], video: { id: 'z4uPjkmWxSE', short: false } },
+      { id: 'b-step', title: 'Step up and over', spec: '3 × 10', cues: ['Drive the knee over the foot', 'Control alignment of knee and ankle'], video: { id: 'hP4jBnUeB18', short: false } },
+      { id: 'b-sldl', title: 'Single-leg deadlift, supported', spec: '3 × 8 · 1 DB · 1 min rest', cues: ['Use a light support for balance only', 'Hinge from the hip, keep back flat', 'Slow eccentric'], video: { id: 'Ex_pPwkzS1k', short: true } },
+      { id: 'b-calf', title: 'Single-leg calf raise', spec: '3 × 8 · 20 lb · 30 bpm', cues: ['Hold the weight on the side of the working leg', 'Match tempo to a 30 bpm metronome', 'Next week: progress to 3 × 10–12 reps'], video: { id: 'YCmLU4JoFac', short: false } }
+    ]
+  },
+  {
+    key: 'rehab',
+    title: 'Rehab drills',
+    subtitle: '3–4× per week · running or non-running days',
+    items: [
+      { id: 'r-mobil', title: 'Ankle dorsiflexion mobilization', spec: '3 × 10 · resistance band', cues: ['Place the resistance band at the crease of the ankle', 'Drive the knee forward over the toes'], video: { id: '5jgUBrI-CpM', short: true } },
+      { id: 'r-stretch', title: 'Gastrocnemius stretch', spec: '2 min · right leg only', cues: ['Lean against a wall, foot pointing straight forward', 'Push forefoot into the ground for 30 seconds', 'Then attempt to lift the foot for 30 seconds', 'Repeat for the full 2 minutes'], video: null },
+      { id: 'r-dowel', title: 'Dorsiflexion + eversion with dowel', spec: 'Per coach guidance', cues: ['Drive the knee over the pinky toe', 'Optional: place a small Naboso wedge under the heel, wide side out'], video: { id: 'ZRepfDfgPCs', short: false } }
+    ]
+  }
+];
+
+const ALL_ITEMS = PLAN.flatMap(s => s.items);
+
+const C = {
+  bg: '#F2EDE3',
+  card: '#FBF7EE',
+  ink: '#1A1A18',
+  inkSoft: '#54504A',
+  inkMute: '#8E8A7E',
+  accent: '#2C4A3E',
+  border: 'rgba(26, 26, 24, 0.08)',
+  borderStrong: 'rgba(26, 26, 24, 0.18)'
+};
+
+const STORAGE_KEY = 'rehab-state-v1';
+
+function App() {
+  const today = new Date().toISOString().slice(0, 10);
+  const [completed, setCompleted] = useState(() => {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return {};
+      const data = JSON.parse(raw);
+      return data.date === today ? (data.completed || {}) : {};
+    } catch { return {}; }
+  });
+  const [view, setView] = useState({ type: 'list', itemId: null });
+
+  useEffect(() => {
+    if (view.type === 'detail') window.scrollTo(0, 0);
+  }, [view]);
+
+  const persist = (next) => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ date: today, completed: next }));
+    } catch {}
+  };
+
+  const toggle = (id) => {
+    const next = { ...completed };
+    if (next[id]) delete next[id];
+    else next[id] = true;
+    setCompleted(next);
+    persist(next);
+  };
+
+  const reset = () => {
+    setCompleted({});
+    persist({});
+  };
+
+  const totalDone = Object.keys(completed).filter(k => completed[k]).length;
+  const totalAll = ALL_ITEMS.length;
+  const dateLabel = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+
+  if (view.type === 'detail') {
+    const item = ALL_ITEMS.find(i => i.id === view.itemId);
+    if (!item) {
+      setView({ type: 'list' });
+      return null;
+    }
+    return <Detail item={item} done={!!completed[item.id]} onBack={() => setView({ type: 'list' })} onToggle={() => toggle(item.id)} />;
+  }
+
+  return (
+    <div className="fade" style={{ minHeight: '100vh' }}>
+      <header style={{ padding: '40px 24px 24px' }}>
+        <div className="mono" style={{ fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: C.inkMute, marginBottom: 14 }}>
+          {dateLabel}
+        </div>
+        <h1 className="serif" style={{ fontSize: 44, lineHeight: 0.95, margin: 0, fontWeight: 400, letterSpacing: '-0.025em' }}>
+          The plan
+        </h1>
+        <div style={{ marginTop: 22, display: 'flex', alignItems: 'center', gap: 12 }}>
+          <Progress done={totalDone} total={totalAll} />
+          <span className="mono" style={{ fontSize: 11, color: C.inkSoft, whiteSpace: 'nowrap', letterSpacing: '0.04em' }}>
+            {totalDone}/{totalAll}
+          </span>
+          {totalDone > 0 && (
+            <button onClick={reset} style={{ background: 'transparent', border: 'none', color: C.inkMute, fontSize: 11, cursor: 'pointer', padding: '4px 0', textDecoration: 'underline', textUnderlineOffset: 3 }}>
+              reset
+            </button>
+          )}
+        </div>
+      </header>
+      <main style={{ padding: '0 24px' }}>
+        {PLAN.map((section, idx) => (
+          <Section key={section.key} section={section} completed={completed} onOpen={(id) => setView({ type: 'detail', itemId: id })} onToggle={toggle} first={idx === 0} />
+        ))}
+      </main>
+      <footer style={{ padding: '40px 24px 24px', textAlign: 'center' }}>
+        <div className="mono" style={{ fontSize: 9, letterSpacing: '0.2em', textTransform: 'uppercase', color: C.inkMute }}>
+          NYC marathon · ankle rehab + base build
+        </div>
+      </footer>
+    </div>
+  );
+}
+
+function Progress({ done, total }) {
+  const pct = total === 0 ? 0 : (done / total) * 100;
+  return (
+    <div style={{ flex: 1, height: 3, background: C.border, borderRadius: 2, overflow: 'hidden' }}>
+      <div style={{ height: '100%', width: `${pct}%`, background: C.accent, transition: 'width 0.3s ease' }} />
+    </div>
+  );
+}
+
+function Section({ section, completed, onOpen, onToggle, first }) {
+  return (
+    <section style={{ marginTop: first ? 12 : 40 }}>
+      <div style={{ marginBottom: 8, paddingBottom: 14, borderBottom: `0.5px solid ${C.borderStrong}` }}>
+        <div className="mono" style={{ fontSize: 10, letterSpacing: '0.22em', textTransform: 'uppercase', color: C.accent, marginBottom: 6 }}>
+          {section.title}
+        </div>
+        <div style={{ fontSize: 13, color: C.inkSoft, lineHeight: 1.5 }}>
+          {section.subtitle}
+        </div>
+      </div>
+      <div>
+        {section.items.map(item => (
+          <Row key={item.id} item={item} done={!!completed[item.id]} onOpen={() => onOpen(item.id)} onToggle={() => onToggle(item.id)} />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function Row({ item, done, onOpen, onToggle }) {
+  return (
+    <div className="row" style={{ display: 'flex', alignItems: 'flex-start', gap: 14, padding: '16px 0', borderBottom: `0.5px solid ${C.border}` }}>
+      <button
+        onClick={onToggle}
+        aria-label={done ? 'Mark not done' : 'Mark done'}
+        style={{
+          width: 26, height: 26, borderRadius: '50%',
+          border: `1.5px solid ${done ? C.accent : C.borderStrong}`,
+          background: done ? C.accent : 'transparent',
+          flexShrink: 0, marginTop: 2,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          cursor: 'pointer', padding: 0, transition: 'all 0.15s'
+        }}
+      >
+        {done && (
+          <svg width="13" height="13" viewBox="0 0 13 13">
+            <path d="M3 6.5L5.4 8.9L10 4" stroke={C.bg} strokeWidth="1.8" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        )}
+      </button>
+      <button onClick={onOpen} style={{ flex: 1, minWidth: 0, background: 'transparent', border: 'none', padding: 0, textAlign: 'left', cursor: 'pointer' }}>
+        <div className="serif" style={{
+          fontSize: 19, fontWeight: 400, color: C.ink,
+          opacity: done ? 0.4 : 1,
+          textDecoration: done ? 'line-through' : 'none',
+          letterSpacing: '-0.012em', lineHeight: 1.2,
+          marginBottom: 4
+        }}>
+          {item.title}
+        </div>
+        <div className="mono" style={{
+          fontSize: 11, color: C.inkMute, letterSpacing: '0.03em',
+          opacity: done ? 0.5 : 1,
+          display: 'flex', alignItems: 'center', gap: 8
+        }}>
+          <span>{item.spec}</span>
+          {item.video && (
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 3, color: C.accent }}>
+              <svg width="9" height="9" viewBox="0 0 9 9"><path d="M2 1.5 L7 4.5 L2 7.5 Z" fill="currentColor" /></svg>
+              video
+            </span>
+          )}
+        </div>
+      </button>
+      <button onClick={onOpen} aria-label="Open" style={{ background: 'transparent', border: 'none', padding: '6px 2px 0', color: C.inkMute, cursor: 'pointer' }}>
+        <svg width="14" height="14" viewBox="0 0 14 14">
+          <path d="M5 3l4 4-4 4" stroke="currentColor" strokeWidth="1.4" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </button>
+    </div>
+  );
+}
+
+function Detail({ item, done, onBack, onToggle }) {
+  return (
+    <div className="fade" style={{ minHeight: '100vh' }}>
+      <header style={{ padding: '24px 24px 4px' }}>
+        <button onClick={onBack} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: C.inkSoft, fontSize: 13, padding: '8px 0', display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+          <svg width="14" height="14" viewBox="0 0 14 14">
+            <path d="M9 3l-4 4 4 4" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+          The plan
+        </button>
+      </header>
+      <main style={{ padding: '8px 24px 40px' }}>
+        <h1 className="serif" style={{ fontSize: 38, lineHeight: 1.05, margin: '12px 0 14px', fontWeight: 400, letterSpacing: '-0.025em' }}>
+          {item.title}
+        </h1>
+        <div className="mono" style={{ fontSize: 12, color: C.inkSoft, letterSpacing: '0.04em', marginBottom: 28 }}>
+          {item.spec}
+        </div>
+
+        {item.video && (
+          <a
+            href={item.video.short ? `https://www.youtube.com/shorts/${item.video.id}` : `https://www.youtube.com/watch?v=${item.video.id}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              display: 'block', position: 'relative',
+              width: '100%', aspectRatio: '16/9',
+              borderRadius: 14, overflow: 'hidden',
+              background: '#1A1A18',
+              marginBottom: 32, textDecoration: 'none',
+              boxShadow: '0 1px 0 rgba(26,26,24,0.06)'
+            }}
+          >
+            <img
+              src={`https://img.youtube.com/vi/${item.video.id}/hqdefault.jpg`}
+              alt={`${item.title} demonstration`}
+              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+            />
+            <div style={{
+              position: 'absolute', inset: 0,
+              background: 'linear-gradient(to bottom, rgba(0,0,0,0.05) 40%, rgba(0,0,0,0.55) 100%)'
+            }} />
+            <div style={{
+              position: 'absolute', inset: 0,
+              display: 'flex', alignItems: 'center', justifyContent: 'center'
+            }}>
+              <div style={{
+                width: 58, height: 58, borderRadius: '50%',
+                background: C.bg,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                boxShadow: '0 4px 14px rgba(0,0,0,0.25)'
+              }}>
+                <svg width="20" height="20" viewBox="0 0 20 20">
+                  <path d="M6 3.5 L16 10 L6 16.5 Z" fill={C.ink} />
+                </svg>
+              </div>
+            </div>
+            <div className="mono" style={{
+              position: 'absolute', bottom: 12, left: 14, right: 14,
+              color: '#FBF7EE', fontSize: 9, letterSpacing: '0.22em',
+              textTransform: 'uppercase',
+              display: 'flex', justifyContent: 'space-between', alignItems: 'center'
+            }}>
+              <span>{item.video.short ? 'YouTube short' : 'Watch on YouTube'}</span>
+              <span style={{ fontSize: 13 }}>↗</span>
+            </div>
+          </a>
+        )}
+
+        {item.cues && item.cues.length > 0 ? (
+          <div style={{ marginBottom: 36 }}>
+            <div className="mono" style={{ fontSize: 10, letterSpacing: '0.22em', textTransform: 'uppercase', color: C.accent, marginBottom: 14 }}>
+              Form cues
+            </div>
+            <ol style={{ margin: 0, padding: 0, listStyle: 'none' }}>
+              {item.cues.map((cue, i) => (
+                <li key={i} style={{
+                  display: 'flex', alignItems: 'flex-start', gap: 16,
+                  padding: '14px 0',
+                  borderTop: i === 0 ? 'none' : `0.5px solid ${C.border}`,
+                  fontSize: 15, lineHeight: 1.55, color: C.ink
+                }}>
+                  <span className="mono" style={{ fontSize: 10, color: C.inkMute, marginTop: 5, minWidth: 18, letterSpacing: '0.05em' }}>
+                    {String(i + 1).padStart(2, '0')}
+                  </span>
+                  <span style={{ flex: 1 }}>{cue}</span>
+                </li>
+              ))}
+            </ol>
+          </div>
+        ) : (
+          <div style={{ padding: '20px 22px', background: C.card, borderRadius: 12, color: C.inkMute, fontSize: 14, marginBottom: 32, lineHeight: 1.5, border: `0.5px solid ${C.border}` }}>
+            No specific cues. Follow your standard form.
+          </div>
+        )}
+
+        <button
+          onClick={onToggle}
+          style={{
+            width: '100%', padding: '17px',
+            background: done ? 'transparent' : C.accent,
+            color: done ? C.accent : C.bg,
+            border: `1.5px solid ${C.accent}`,
+            borderRadius: 999,
+            fontSize: 14, fontWeight: 500,
+            cursor: 'pointer', letterSpacing: '0.02em',
+            transition: 'all 0.15s'
+          }}
+        >
+          {done ? 'Marked complete · undo' : 'Mark complete'}
+        </button>
+      </main>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
