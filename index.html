@@ -339,15 +339,19 @@ function Row({ item, done, showVideos, onOpen, onToggle }) {
 
       {showVideos && item.video && (
         <div style={{ paddingLeft: 50, marginTop: 24 }}>
-          <button onClick={onOpen} style={{ 
-            display: 'inline-flex', alignItems: 'center', gap: 8,
-            background: C.card, border: `1px solid ${C.borderStrong}`,
-            padding: '8px 16px', borderRadius: 8, color: C.accent,
-            fontSize: 12, cursor: 'pointer', fontWeight: 500
-          }} className="mono">
-            <svg width="12" height="12" viewBox="0 0 9 9"><path d="M2 1.5 L7 4.5 L2 7.5 Z" fill="currentColor" /></svg>
-            WATCH VIDEO ↗
-          </button>
+          <div style={{ 
+            position: 'relative', width: '100%', aspectRatio: '16/9', 
+            borderRadius: 12, overflow: 'hidden', background: '#000',
+            boxShadow: '0 4px 20px rgba(0,0,0,0.08)' 
+          }}>
+            <iframe
+              style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 0 }}
+              src={`https://www.youtube.com/embed/${item.video.id}`}
+              title={item.title}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+          </div>
         </div>
       )}
     </div>
@@ -374,53 +378,19 @@ function Detail({ item, done, onBack, onToggle }) {
         </div>
 
         {item.video && (
-          <a
-            href={item.video.short ? `https://www.youtube.com/shorts/${item.video.id}` : `https://www.youtube.com/watch?v=${item.video.id}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              display: 'block', position: 'relative',
-              width: '100%', aspectRatio: '16/9',
-              borderRadius: 14, overflow: 'hidden',
-              background: '#1A1A18',
-              marginBottom: 32, textDecoration: 'none',
-              boxShadow: '0 1px 0 rgba(26,26,24,0.06)'
-            }}
-          >
-            <img
-              src={`https://img.youtube.com/vi/${item.video.id}/hqdefault.jpg`}
-              alt={`${item.title} demonstration`}
-              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+          <div style={{ 
+            position: 'relative', width: '100%', aspectRatio: '16/9', 
+            borderRadius: 14, overflow: 'hidden', background: '#000',
+            marginBottom: 32, boxShadow: '0 8px 30px rgba(0,0,0,0.1)' 
+          }}>
+            <iframe
+              style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 0 }}
+              src={`https://www.youtube.com/embed/${item.video.id}`}
+              title={item.title}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
             />
-            <div style={{
-              position: 'absolute', inset: 0,
-              background: 'linear-gradient(to bottom, rgba(0,0,0,0.05) 40%, rgba(0,0,0,0.55) 100%)'
-            }} />
-            <div style={{
-              position: 'absolute', inset: 0,
-              display: 'flex', alignItems: 'center', justifyContent: 'center'
-            }}>
-              <div style={{
-                width: 58, height: 58, borderRadius: '50%',
-                background: C.bg,
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                boxShadow: '0 4px 14px rgba(0,0,0,0.25)'
-              }}>
-                <svg width="20" height="20" viewBox="0 0 20 20">
-                  <path d="M6 3.5 L16 10 L6 16.5 Z" fill={C.ink} />
-                </svg>
-              </div>
-            </div>
-            <div className="mono" style={{
-              position: 'absolute', bottom: 12, left: 14, right: 14,
-              color: '#FBF7EE', fontSize: 9, letterSpacing: '0.22em',
-              textTransform: 'uppercase',
-              display: 'flex', justifyContent: 'space-between', alignItems: 'center'
-            }}>
-              <span>{item.video.short ? 'YouTube short' : 'Watch on YouTube'}</span>
-              <span style={{ fontSize: 13 }}>↗</span>
-            </div>
-          </a>
+          </div>
         )}
 
         {item.cues && item.cues.length > 0 ? (
