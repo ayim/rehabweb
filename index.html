@@ -104,6 +104,8 @@ function App() {
     } catch { return {}; }
   });
   const [view, setView] = useState({ type: 'list', itemId: null });
+  const [activeSection, setActiveSection] = useState('all');
+  const [showVideos, setShowVideos] = useState(true);
 
   useEffect(() => {
     if (view.type === 'detail') window.scrollTo(0, 0);
@@ -141,14 +143,63 @@ function App() {
     return <Detail item={item} done={!!completed[item.id]} onBack={() => setView({ type: 'list' })} onToggle={() => toggle(item.id)} />;
   }
 
+  const displayedSections = activeSection === 'all' 
+    ? PLAN 
+    : PLAN.filter(s => s.key === activeSection);
+
   return (
     <div className="fade" style={{ minHeight: '100vh' }}>
+      <nav style={{ 
+        position: 'sticky', top: 0, zIndex: 100, 
+        background: 'rgba(242, 237, 227, 0.9)', 
+        backdropFilter: 'blur(8px)',
+        borderBottom: `0.5px solid ${C.borderStrong}`,
+        padding: '12px 24px',
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        gap: 12, overflowX: 'auto', WebkitOverflowScrolling: 'touch'
+      }}>
+        <div style={{ display: 'flex', gap: 8 }}>
+          {['all', ...PLAN.map(s => s.key)].map(key => (
+            <button 
+              key={key}
+              onClick={() => setActiveSection(key)}
+              style={{
+                background: activeSection === key ? C.accent : 'transparent',
+                color: activeSection === key ? C.bg : C.inkSoft,
+                border: `1px solid ${activeSection === key ? C.accent : C.borderStrong}`,
+                padding: '6px 12px', borderRadius: 20,
+                fontSize: 11, fontWeight: 600, cursor: 'pointer',
+                whiteSpace: 'nowrap', textTransform: 'uppercase', letterSpacing: '0.04em'
+              }}
+              className="mono"
+            >
+              {key === 'all' ? 'All' : PLAN.find(s => s.key === key).title}
+            </button>
+          ))}
+        </div>
+        <button 
+          onClick={() => setShowVideos(!showVideos)}
+          style={{
+            background: 'transparent',
+            color: showVideos ? C.accent : C.inkMute,
+            border: `1px solid ${showVideos ? C.accent : C.border}`,
+            padding: '6px 12px', borderRadius: 20,
+            fontSize: 10, fontWeight: 600, cursor: 'pointer',
+            whiteSpace: 'nowrap', textTransform: 'uppercase', letterSpacing: '0.04em',
+            display: 'flex', alignItems: 'center', gap: 6
+          }}
+          className="mono"
+        >
+          {showVideos ? 'Videos ON' : 'Videos OFF'}
+        </button>
+      </nav>
+
       <header style={{ padding: '40px 24px 24px' }}>
         <div className="mono" style={{ fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: C.inkMute, marginBottom: 14 }}>
           {dateLabel}
         </div>
         <h1 className="serif" style={{ fontSize: 44, lineHeight: 0.95, margin: 0, fontWeight: 400, letterSpacing: '-0.025em' }}>
-          The plan
+          {activeSection === 'all' ? 'The plan' : PLAN.find(s => s.key === activeSection).title}
         </h1>
         <div style={{ marginTop: 22, display: 'flex', alignItems: 'center', gap: 12 }}>
           <Progress done={totalDone} total={totalAll} />
@@ -163,8 +214,16 @@ function App() {
         </div>
       </header>
       <main style={{ padding: '0 24px' }}>
-        {PLAN.map((section, idx) => (
-          <Section key={section.key} section={section} completed={completed} onOpen={(id) => setView({ type: 'detail', itemId: id })} onToggle={toggle} first={idx === 0} />
+        {displayedSections.map((section, idx) => (
+          <Section 
+            key={section.key} 
+            section={section} 
+            completed={completed} 
+            showVideos={showVideos}
+            onOpen={(id) => setView({ type: 'detail', itemId: id })} 
+            onToggle={toggle} 
+            first={idx === 0} 
+          />
         ))}
       </main>
       <footer style={{ padding: '40px 24px 24px', textAlign: 'center' }}>
@@ -185,7 +244,7 @@ function Progress({ done, total }) {
   );
 }
 
-function Section({ section, completed, onOpen, onToggle, first }) {
+function Section({ section, completed, showVideos, onOpen, onToggle, first }) {
   return (
     <section style={{ marginTop: first ? 12 : 40 }}>
       <div style={{ marginBottom: 8, paddingBottom: 14, borderBottom: `0.5px solid ${C.borderStrong}` }}>
@@ -198,14 +257,21 @@ function Section({ section, completed, onOpen, onToggle, first }) {
       </div>
       <div>
         {section.items.map(item => (
-          <Row key={item.id} item={item} done={!!completed[item.id]} onOpen={() => onOpen(item.id)} onToggle={() => onToggle(item.id)} />
+          <Row 
+            key={item.id} 
+            item={item} 
+            done={!!completed[item.id]} 
+            showVideos={showVideos}
+            onOpen={() => onOpen(item.id)} 
+            onToggle={() => onToggle(item.id)} 
+          />
         ))}
       </div>
     </section>
   );
 }
 
-function Row({ item, done, onOpen, onToggle }) {
+function Row({ item, done, showVideos, onOpen, onToggle }) {
   return (
     <div className="row" style={{ 
       padding: '32px 0', 
@@ -271,7 +337,7 @@ function Row({ item, done, onOpen, onToggle }) {
         </div>
       )}
 
-      {item.video && (
+      {showVideos && item.video && (
         <div style={{ paddingLeft: 50, marginTop: 24 }}>
           <button onClick={onOpen} style={{ 
             display: 'inline-flex', alignItems: 'center', gap: 8,
