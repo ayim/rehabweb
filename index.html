@@ -219,76 +219,83 @@ function Section({ section, completed, onOpen, onToggle, first }) {
 
 function Row({ item, done, onOpen, onToggle }) {
   return (
-    <div className="row" style={{ display: 'flex', alignItems: 'flex-start', gap: 14, padding: '20px 0', borderBottom: `0.5px solid ${C.border}` }}>
-      <button
-        onClick={onToggle}
-        aria-label={done ? 'Mark not done' : 'Mark done'}
-        style={{
-          width: 26, height: 26, borderRadius: '50%',
-          border: `1.5px solid ${done ? C.accent : C.borderStrong}`,
-          background: done ? C.accent : 'transparent',
-          flexShrink: 0, marginTop: 2,
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          cursor: 'pointer', padding: 0, transition: 'all 0.15s'
-        }}
-      >
-        {done && (
-          <svg width="13" height="13" viewBox="0 0 13 13">
-            <path d="M3 6.5L5.4 8.9L10 4" stroke={C.bg} strokeWidth="1.8" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        )}
-      </button>
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <button onClick={onOpen} style={{ display: 'block', width: '100%', background: 'transparent', border: 'none', padding: 0, textAlign: 'left', cursor: 'pointer' }}>
+    <div className="row" style={{ 
+      padding: '32px 0', 
+      borderBottom: `0.5px solid ${C.borderStrong}`,
+      opacity: done ? 0.4 : 1,
+      transition: 'opacity 0.2s ease'
+    }}>
+      <div style={{ display: 'flex', alignItems: 'flex-start', gap: 18, marginBottom: 16 }}>
+        <button
+          onClick={onToggle}
+          aria-label={done ? 'Mark not done' : 'Mark done'}
+          style={{
+            width: 32, height: 32, borderRadius: '50%',
+            border: `1.5px solid ${done ? C.accent : C.borderStrong}`,
+            background: done ? C.accent : 'transparent',
+            flexShrink: 0, marginTop: 4,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            cursor: 'pointer', padding: 0, transition: 'all 0.15s'
+          }}
+        >
+          {done && (
+            <svg width="16" height="16" viewBox="0 0 13 13">
+              <path d="M3 6.5L5.4 8.9L10 4" stroke={C.bg} strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          )}
+        </button>
+        <div style={{ flex: 1 }}>
           <div className="serif" style={{
-            fontSize: 20, fontWeight: 400, color: C.ink,
-            opacity: done ? 0.4 : 1,
+            fontSize: 26, fontWeight: 400, color: C.ink,
             textDecoration: done ? 'line-through' : 'none',
-            letterSpacing: '-0.012em', lineHeight: 1.2,
+            letterSpacing: '-0.015em', lineHeight: 1.1,
             marginBottom: 6
           }}>
             {item.title}
           </div>
           <div className="mono" style={{
-            fontSize: 11, color: C.inkSoft, letterSpacing: '0.03em',
-            opacity: done ? 0.5 : 1,
-            display: 'flex', alignItems: 'center', gap: 8,
-            marginBottom: 10
+            fontSize: 13, color: C.inkSoft, letterSpacing: '0.04em',
           }}>
-            <span>{item.spec}</span>
-            {item.video && (
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 3, color: C.accent }}>
-                <svg width="9" height="9" viewBox="0 0 9 9"><path d="M2 1.5 L7 4.5 L2 7.5 Z" fill="currentColor" /></svg>
-                video
-              </span>
-            )}
+            {item.spec}
           </div>
-        </button>
-        
-        {item.cues && item.cues.length > 0 && (
-          <ul style={{ 
-            margin: 0, padding: 0, listStyle: 'none', 
-            opacity: done ? 0.3 : 0.8,
-            borderLeft: `1px solid ${C.borderStrong}`,
-            paddingLeft: 12,
-            marginTop: 4
-          }}>
+        </div>
+      </div>
+
+      {item.cues && item.cues.length > 0 && (
+        <div style={{ paddingLeft: 50 }}>
+          <div className="mono" style={{ fontSize: 10, letterSpacing: '0.22em', textTransform: 'uppercase', color: C.inkMute, marginBottom: 16, marginTop: 24 }}>
+            Form cues
+          </div>
+          <ul style={{ margin: 0, padding: 0, listStyle: 'none' }}>
             {item.cues.map((cue, i) => (
               <li key={i} style={{ 
-                fontSize: 13, lineHeight: 1.5, color: C.inkSoft, 
-                marginBottom: i === item.cues.length - 1 ? 0 : 6 
+                display: 'flex', gap: 16, 
+                fontSize: 15, lineHeight: 1.55, color: C.ink,
+                marginBottom: 12
               }}>
-                {cue}
+                <span className="mono" style={{ fontSize: 11, color: C.inkMute, marginTop: 4, minWidth: 24 }}>
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+                <span style={{ flex: 1 }}>{cue}</span>
               </li>
             ))}
           </ul>
-        )}
-      </div>
-      <button onClick={onOpen} aria-label="Open" style={{ background: 'transparent', border: 'none', padding: '6px 2px 0', color: C.inkMute, cursor: 'pointer' }}>
-        <svg width="14" height="14" viewBox="0 0 14 14">
-          <path d="M5 3l4 4-4 4" stroke="currentColor" strokeWidth="1.4" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      </button>
+        </div>
+      )}
+
+      {item.video && (
+        <div style={{ paddingLeft: 50, marginTop: 24 }}>
+          <button onClick={onOpen} style={{ 
+            display: 'inline-flex', alignItems: 'center', gap: 8,
+            background: C.card, border: `1px solid ${C.borderStrong}`,
+            padding: '8px 16px', borderRadius: 8, color: C.accent,
+            fontSize: 12, cursor: 'pointer', fontWeight: 500
+          }} className="mono">
+            <svg width="12" height="12" viewBox="0 0 9 9"><path d="M2 1.5 L7 4.5 L2 7.5 Z" fill="currentColor" /></svg>
+            WATCH VIDEO ↗
+          </button>
+        </div>
+      )}
     </div>
   );
 }
