@@ -219,7 +219,7 @@ function Section({ section, completed, onOpen, onToggle, first }) {
 
 function Row({ item, done, onOpen, onToggle }) {
   return (
-    <div className="row" style={{ display: 'flex', alignItems: 'flex-start', gap: 14, padding: '16px 0', borderBottom: `0.5px solid ${C.border}` }}>
+    <div className="row" style={{ display: 'flex', alignItems: 'flex-start', gap: 14, padding: '20px 0', borderBottom: `0.5px solid ${C.border}` }}>
       <button
         onClick={onToggle}
         aria-label={done ? 'Mark not done' : 'Mark done'}
@@ -238,30 +238,52 @@ function Row({ item, done, onOpen, onToggle }) {
           </svg>
         )}
       </button>
-      <button onClick={onOpen} style={{ flex: 1, minWidth: 0, background: 'transparent', border: 'none', padding: 0, textAlign: 'left', cursor: 'pointer' }}>
-        <div className="serif" style={{
-          fontSize: 19, fontWeight: 400, color: C.ink,
-          opacity: done ? 0.4 : 1,
-          textDecoration: done ? 'line-through' : 'none',
-          letterSpacing: '-0.012em', lineHeight: 1.2,
-          marginBottom: 4
-        }}>
-          {item.title}
-        </div>
-        <div className="mono" style={{
-          fontSize: 11, color: C.inkMute, letterSpacing: '0.03em',
-          opacity: done ? 0.5 : 1,
-          display: 'flex', alignItems: 'center', gap: 8
-        }}>
-          <span>{item.spec}</span>
-          {item.video && (
-            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 3, color: C.accent }}>
-              <svg width="9" height="9" viewBox="0 0 9 9"><path d="M2 1.5 L7 4.5 L2 7.5 Z" fill="currentColor" /></svg>
-              video
-            </span>
-          )}
-        </div>
-      </button>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <button onClick={onOpen} style={{ display: 'block', width: '100%', background: 'transparent', border: 'none', padding: 0, textAlign: 'left', cursor: 'pointer' }}>
+          <div className="serif" style={{
+            fontSize: 20, fontWeight: 400, color: C.ink,
+            opacity: done ? 0.4 : 1,
+            textDecoration: done ? 'line-through' : 'none',
+            letterSpacing: '-0.012em', lineHeight: 1.2,
+            marginBottom: 6
+          }}>
+            {item.title}
+          </div>
+          <div className="mono" style={{
+            fontSize: 11, color: C.inkSoft, letterSpacing: '0.03em',
+            opacity: done ? 0.5 : 1,
+            display: 'flex', alignItems: 'center', gap: 8,
+            marginBottom: 10
+          }}>
+            <span>{item.spec}</span>
+            {item.video && (
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 3, color: C.accent }}>
+                <svg width="9" height="9" viewBox="0 0 9 9"><path d="M2 1.5 L7 4.5 L2 7.5 Z" fill="currentColor" /></svg>
+                video
+              </span>
+            )}
+          </div>
+        </button>
+        
+        {item.cues && item.cues.length > 0 && (
+          <ul style={{ 
+            margin: 0, padding: 0, listStyle: 'none', 
+            opacity: done ? 0.3 : 0.8,
+            borderLeft: `1px solid ${C.borderStrong}`,
+            paddingLeft: 12,
+            marginTop: 4
+          }}>
+            {item.cues.map((cue, i) => (
+              <li key={i} style={{ 
+                fontSize: 13, lineHeight: 1.5, color: C.inkSoft, 
+                marginBottom: i === item.cues.length - 1 ? 0 : 6 
+              }}>
+                {cue}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
       <button onClick={onOpen} aria-label="Open" style={{ background: 'transparent', border: 'none', padding: '6px 2px 0', color: C.inkMute, cursor: 'pointer' }}>
         <svg width="14" height="14" viewBox="0 0 14 14">
           <path d="M5 3l4 4-4 4" stroke="currentColor" strokeWidth="1.4" fill="none" strokeLinecap="round" strokeLinejoin="round" />
