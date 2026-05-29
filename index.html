@@ -45,19 +45,11 @@ const { useState, useEffect } = React;
 
 const PLAN = [
   {
-    key: 'running',
-    title: 'Running',
-    subtitle: '4× per week · 18 mi this week (5/17–5/23)',
-    items: [
-      { id: 'run-easy', title: 'Easy run', spec: 'Conversational pace · level ground', cues: ['This week 5/17–5/23: 18 mi across 4 runs', 'Last week 5/10–5/16: 16 mi', 'Conversational pace — full sentences', 'Level ground only'], video: null }
-    ]
-  },
-  {
     key: 'hamstring',
     title: 'Hamstring',
     subtitle: 'Medial hamstring strain · 2× per day',
     items: [
-      { id: 'h-iso', title: 'Hamstring bridge isometric', spec: '4 × 30s · 2× per day', cues: ['Knees bent to 30°', 'Hold steady, no movement'], video: null },
+      { id: 'h-iso', title: 'Hamstring bridge isometric', spec: '4 × 30s · 2× per day', cues: ['Knees bent to 60°', 'Hold steady, no movement'], video: null },
       { id: 'h-arom', title: 'Active knee extension', spec: '3 × 10 · 2× per day', cues: ['On your back, knees bent', 'Hold the right thigh', 'Slowly extend the knee'], video: null }
     ]
   },
@@ -67,9 +59,9 @@ const PLAN = [
     subtitle: 'Primary drills',
     items: [
       { id: 'a-goblet', title: 'Goblet squat', spec: '3 × 10 · 40 lb KB · 2s/2s · 1 min rest', cues: ['Hold the kettlebell at chest height', 'Pace: 2 seconds down, 2 seconds up', 'Drive through the full foot, brace the trunk'], video: null },
-      { id: 'a-step', title: 'Step up and over', spec: '3 × 10', cues: ['Drive the knee over the foot', 'Control alignment of knee and ankle on the way up and down', 'Right foot points forward, not out'], video: { id: 'hP4jBnUeB18', short: false } },
+      { id: 'a-step', title: 'Step up and over', spec: '3 × 10 · any day', cues: ['Can be done on any day', 'Drive the knee over the foot', 'Control alignment of knee and ankle on the way up and down', 'Right foot points forward, not out'], video: { id: 'hP4jBnUeB18', short: false } },
       { id: 'a-bsq', title: 'Bulgarian split squat', spec: '3 × 8 · 2× 20 lb · 1 min rest', cues: ['Upright trunk', 'Drive the knee over the foot, pointing forward', 'Maximize knee translation over foot to promote ankle mobility'], video: { id: 'Gpkzq1HuhJ0', short: false } },
-      { id: 'a-calf', title: 'Single-leg calf raise', spec: '3 × 12 · 25 lb · 30 bpm', cues: ['Hold the weight on the side of the working leg', 'Match tempo to a 30 bpm metronome'], video: { id: 'YCmLU4JoFac', short: false } }
+      { id: 'a-calf', title: 'Single-leg calf raise — peroneal focus', spec: '3 × 12 · 25 lb · 30 bpm · 2 RIR · slant board', cues: ['Stand on the slant board (slanty platform)', 'Peroneal focus — drive up through the big-toe side, foot slightly everted', 'Hold the weight on the side of the working leg', 'Match tempo to a 30 bpm metronome', 'Leave 2 reps in reserve'], video: { id: 'YCmLU4JoFac', short: false }, bpm: 30 }
     ]
   },
   {
@@ -78,9 +70,9 @@ const PLAN = [
     subtitle: 'Primary drills',
     items: [
       { id: 'b-carry', title: 'Loaded carry march', spec: '4 × 45s on / 45s rest · 2× 63 lb', cues: ['Maintain upright posture and steady cadence', 'Trunk braced throughout'], video: { id: 'z4uPjkmWxSE', short: false } },
-      { id: 'b-step', title: 'Step up and over', spec: '3 × 10', cues: ['Drive the knee over the foot', 'Control alignment of knee and ankle'], video: { id: 'hP4jBnUeB18', short: false } },
+      { id: 'b-step', title: 'Step up and over', spec: '3 × 10 · any day', cues: ['Can be done on any day', 'Drive the knee over the foot', 'Control alignment of knee and ankle'], video: { id: 'hP4jBnUeB18', short: false } },
       { id: 'b-sldl', title: 'Single-leg deadlift, supported', spec: '3 × 8 · 1 DB · 1 min rest · pause', cues: ['Use a light support for balance only', 'Hinge from the hip, keep back flat', 'Slow eccentric — pause at the bottom'], video: { id: 'Ex_pPwkzS1k', short: true } },
-      { id: 'b-calf', title: 'Single-leg calf raise', spec: '3 × 12 · 25 lb · 30 bpm', cues: ['Hold the weight on the side of the working leg', 'Match tempo to a 30 bpm metronome'], video: { id: 'YCmLU4JoFac', short: false } }
+      { id: 'b-calf', title: 'Single-leg calf raise — peroneal focus', spec: '3 × 12 · 25 lb · 30 bpm · 2 RIR · slant board', cues: ['Stand on the slant board (slanty platform)', 'Peroneal focus — drive up through the big-toe side, foot slightly everted', 'Hold the weight on the side of the working leg', 'Match tempo to a 30 bpm metronome', 'Leave 2 reps in reserve'], video: { id: 'YCmLU4JoFac', short: false }, bpm: 30 }
     ]
   },
   {
@@ -89,13 +81,19 @@ const PLAN = [
     subtitle: 'Rehab drills · 3–4× per week',
     items: [
       { id: 'r-mobil', title: 'Ankle dorsiflexion mobilization', spec: '3 × 10 · resistance band', cues: ['Place the resistance band at the crease of the ankle', 'Drive the knee forward over the toes'], video: { id: '5jgUBrI-CpM', short: true } },
-      { id: 'r-stretch', title: 'Gastrocnemius stretch', spec: '2 min · right leg only', cues: ['Lean against a wall, foot pointing straight forward', 'Push forefoot into the ground for 30 seconds', 'Then attempt to lift the foot for 30 seconds', 'Repeat for the full 2 minutes'], video: null },
+      { id: 'r-stretch', title: 'Gastrocnemius stretch', spec: '2 min · right leg only', cues: ['Lean against a wall, foot pointing straight forward', 'Push forefoot into the ground for 30 seconds', 'Then attempt to lift the foot for 30 seconds', 'Repeat for the full 2 minutes'], video: { id: '3_ZrG8PHKrk', short: false } },
       { id: 'r-dowel', title: 'Dorsiflexion + eversion with dowel', spec: 'Per coach guidance', cues: ['Drive the knee over the pinky toe', 'Optional: place a small Naboso wedge under the heel, wide side out'], video: { id: 'ZRepfDfgPCs', short: false } }
     ]
   }
 ];
 
 const ALL_ITEMS = PLAN.flatMap(s => s.items);
+
+// Target number of sets, parsed from the leading "N ×" of the spec (defaults to 1).
+const targetSets = (item) => {
+  const m = /^\s*(\d+)\s*×/.exec(item.spec || '');
+  return m ? parseInt(m[1], 10) : 1;
+};
 
 const C = {
   bg: '#F2EDE3',
@@ -108,16 +106,17 @@ const C = {
   borderStrong: 'rgba(26, 26, 24, 0.18)'
 };
 
-const STORAGE_KEY = 'rehab-state-v1';
+const STORAGE_KEY = 'rehab-state-v2';
 
 function App() {
   const today = new Date().toISOString().slice(0, 10);
-  const [completed, setCompleted] = useState(() => {
+  // sets: { [id]: number of sets recorded today }
+  const [sets, setSets] = useState(() => {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (!raw) return {};
       const data = JSON.parse(raw);
-      return data.date === today ? (data.completed || {}) : {};
+      return data.date === today ? (data.sets || {}) : {};
     } catch { return {}; }
   });
   const [view, setView] = useState({ type: 'list', itemId: null });
@@ -130,24 +129,29 @@ function App() {
 
   const persist = (next) => {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({ date: today, completed: next }));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ date: today, sets: next }));
     } catch {}
   };
 
-  const toggle = (id) => {
-    const next = { ...completed };
-    if (next[id]) delete next[id];
-    else next[id] = true;
-    setCompleted(next);
+  // Each tap records one set. Tapping again once all sets are done resets to zero.
+  const recordSet = (id) => {
+    const item = ALL_ITEMS.find(i => i.id === id);
+    const target = targetSets(item);
+    const cur = sets[id] || 0;
+    const next = { ...sets };
+    if (cur >= target) delete next[id];
+    else next[id] = cur + 1;
+    setSets(next);
     persist(next);
   };
 
   const reset = () => {
-    setCompleted({});
+    setSets({});
     persist({});
   };
 
-  const totalDone = Object.keys(completed).filter(k => completed[k]).length;
+  const isDone = (item) => (sets[item.id] || 0) >= targetSets(item);
+  const totalDone = ALL_ITEMS.filter(isDone).length;
   const totalAll = ALL_ITEMS.length;
   const dateLabel = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
 
@@ -157,7 +161,7 @@ function App() {
       setView({ type: 'list' });
       return null;
     }
-    return <Detail item={item} done={!!completed[item.id]} onBack={() => setView({ type: 'list' })} onToggle={() => toggle(item.id)} />;
+    return <Detail item={item} sets={sets[item.id] || 0} target={targetSets(item)} onBack={() => setView({ type: 'list' })} onRecord={() => recordSet(item.id)} onReset={() => { const n = { ...sets }; delete n[item.id]; setSets(n); persist(n); }} />;
   }
 
   const displayedSections = activeSection === 'all' 
@@ -234,14 +238,14 @@ function App() {
       </header>
       <main style={{ padding: '0 24px' }}>
         {displayedSections.map((section, idx) => (
-          <Section 
-            key={section.key} 
-            section={section} 
-            completed={completed} 
+          <Section
+            key={section.key}
+            section={section}
+            sets={sets}
             showVideos={showVideos}
-            onOpen={(id) => setView({ type: 'detail', itemId: id })} 
-            onToggle={toggle} 
-            first={idx === 0} 
+            onOpen={(id) => setView({ type: 'detail', itemId: id })}
+            onRecord={recordSet}
+            first={idx === 0}
           />
         ))}
       </main>
@@ -263,7 +267,7 @@ function Progress({ done, total }) {
   );
 }
 
-function Section({ section, completed, showVideos, onOpen, onToggle, first }) {
+function Section({ section, sets, showVideos, onOpen, onRecord, first }) {
   return (
     <section style={{ marginTop: first ? 12 : 40 }}>
       <div style={{ marginBottom: 8, paddingBottom: 14, borderBottom: `0.5px solid ${C.borderStrong}` }}>
@@ -276,13 +280,14 @@ function Section({ section, completed, showVideos, onOpen, onToggle, first }) {
       </div>
       <div>
         {section.items.map(item => (
-          <Row 
-            key={item.id} 
-            item={item} 
-            done={!!completed[item.id]} 
+          <Row
+            key={item.id}
+            item={item}
+            sets={sets[item.id] || 0}
+            target={targetSets(item)}
             showVideos={showVideos}
-            onOpen={() => onOpen(item.id)} 
-            onToggle={() => onToggle(item.id)} 
+            onOpen={() => onOpen(item.id)}
+            onRecord={() => onRecord(item.id)}
           />
         ))}
       </div>
@@ -290,33 +295,137 @@ function Section({ section, completed, showVideos, onOpen, onToggle, first }) {
   );
 }
 
-function Row({ item, done, showVideos, onOpen, onToggle }) {
+function Metronome({ bpm }) {
+  const [playing, setPlaying] = useState(false);
+  const [pulse, setPulse] = useState(false);
+  const acRef = React.useRef(null);
+  const timerRef = React.useRef(null);
+  const nextNoteRef = React.useRef(0);
+
+  const tick = (ac, time, accent) => {
+    const osc = ac.createOscillator();
+    const gain = ac.createGain();
+    osc.connect(gain);
+    gain.connect(ac.destination);
+    osc.frequency.value = accent ? 1320 : 880;
+    gain.gain.setValueAtTime(0.0001, time);
+    gain.gain.exponentialRampToValueAtTime(0.5, time + 0.001);
+    gain.gain.exponentialRampToValueAtTime(0.0001, time + 0.05);
+    osc.start(time);
+    osc.stop(time + 0.06);
+  };
+
+  useEffect(() => {
+    if (!playing) return;
+    let ac = acRef.current;
+    if (!ac) {
+      ac = new (window.AudioContext || window.webkitAudioContext)();
+      acRef.current = ac;
+    }
+    if (ac.state === 'suspended') ac.resume();
+    const interval = 60 / bpm;
+    let count = 0;
+    nextNoteRef.current = ac.currentTime + 0.12;
+    const schedule = () => {
+      while (nextNoteRef.current < ac.currentTime + 0.25) {
+        const at = nextNoteRef.current;
+        tick(ac, at, count % 4 === 0);
+        const delay = Math.max(0, (at - ac.currentTime) * 1000);
+        setTimeout(() => setPulse(p => !p), delay);
+        nextNoteRef.current += interval;
+        count++;
+      }
+    };
+    schedule();
+    timerRef.current = setInterval(schedule, 25);
+    return () => clearInterval(timerRef.current);
+  }, [playing, bpm]);
+
+  useEffect(() => () => {
+    if (timerRef.current) clearInterval(timerRef.current);
+    if (acRef.current) acRef.current.close();
+  }, []);
+
   return (
-    <div className="row" style={{ 
-      padding: '32px 0', 
+    <button
+      onClick={(e) => { e.stopPropagation(); setPlaying(p => !p); }}
+      className="mono"
+      aria-label={playing ? 'Stop metronome' : 'Start metronome'}
+      style={{
+        display: 'inline-flex', alignItems: 'center', gap: 9,
+        background: playing ? C.accent : 'transparent',
+        color: playing ? C.bg : C.inkSoft,
+        border: `1.5px solid ${playing ? C.accent : C.borderStrong}`,
+        padding: '8px 14px', borderRadius: 999,
+        fontSize: 11, fontWeight: 600, cursor: 'pointer',
+        letterSpacing: '0.06em', textTransform: 'uppercase',
+        transition: 'all 0.15s'
+      }}
+    >
+      <span style={{
+        width: 9, height: 9, borderRadius: '50%',
+        background: playing ? '#fff' : C.inkMute,
+        transform: playing && pulse ? 'scale(1.6)' : 'scale(1)',
+        opacity: playing && pulse ? 1 : 0.6,
+        transition: 'transform 0.08s ease, opacity 0.08s ease',
+        display: 'inline-block'
+      }} />
+      {playing ? `${bpm} bpm · stop` : `Metronome ${bpm} bpm`}
+    </button>
+  );
+}
+
+// Tap to record a set. Shows a progress ring + count; a checkmark once all sets are done.
+// Tapping when complete resets to zero.
+function SetButton({ sets, target, onRecord, size = 32 }) {
+  const done = sets >= target;
+  const r = size / 2 - 0.75;
+  const circ = 2 * Math.PI * r;
+  const progress = target > 0 ? Math.min(sets / target, 1) : 0;
+  return (
+    <button
+      onClick={(e) => { e.stopPropagation(); onRecord(); }}
+      aria-label={done ? 'Reset sets' : `Record set ${sets + 1} of ${target}`}
+      style={{
+        position: 'relative', width: size, height: size, borderRadius: '50%',
+        border: `1.5px solid ${done ? C.accent : C.borderStrong}`,
+        background: done ? C.accent : 'transparent',
+        flexShrink: 0, padding: 0, cursor: 'pointer',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        transition: 'all 0.15s'
+      }}
+    >
+      {!done && sets > 0 && (
+        <svg width={size} height={size} style={{ position: 'absolute', top: -1.5, left: -1.5, transform: 'rotate(-90deg)' }}>
+          <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke={C.accent} strokeWidth="1.5"
+            strokeDasharray={circ} strokeDashoffset={circ * (1 - progress)} strokeLinecap="round"
+            style={{ transition: 'stroke-dashoffset 0.25s ease' }} />
+        </svg>
+      )}
+      {done ? (
+        <svg width={Math.round(size * 0.5)} height={Math.round(size * 0.5)} viewBox="0 0 13 13">
+          <path d="M3 6.5L5.4 8.9L10 4" stroke={C.bg} strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      ) : sets > 0 ? (
+        <span className="mono" style={{ fontSize: Math.round(size * 0.37), fontWeight: 600, color: C.accent }}>{sets}</span>
+      ) : null}
+    </button>
+  );
+}
+
+function Row({ item, sets, target, showVideos, onOpen, onRecord }) {
+  const done = sets >= target;
+  return (
+    <div className="row" style={{
+      padding: '32px 0',
       borderBottom: `0.5px solid ${C.borderStrong}`,
       opacity: done ? 0.4 : 1,
       transition: 'opacity 0.2s ease'
     }}>
       <div style={{ display: 'flex', alignItems: 'flex-start', gap: 18, marginBottom: 16 }}>
-        <button
-          onClick={onToggle}
-          aria-label={done ? 'Mark not done' : 'Mark done'}
-          style={{
-            width: 32, height: 32, borderRadius: '50%',
-            border: `1.5px solid ${done ? C.accent : C.borderStrong}`,
-            background: done ? C.accent : 'transparent',
-            flexShrink: 0, marginTop: 4,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            cursor: 'pointer', padding: 0, transition: 'all 0.15s'
-          }}
-        >
-          {done && (
-            <svg width="16" height="16" viewBox="0 0 13 13">
-              <path d="M3 6.5L5.4 8.9L10 4" stroke={C.bg} strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          )}
-        </button>
+        <div style={{ marginTop: 4 }}>
+          <SetButton sets={sets} target={target} onRecord={onRecord} />
+        </div>
         <div style={{ flex: 1 }}>
           <div className="serif" style={{
             fontSize: 26, fontWeight: 400, color: C.ink,
@@ -331,6 +440,11 @@ function Row({ item, done, showVideos, onOpen, onToggle }) {
           }}>
             {item.spec}
           </div>
+          {target > 1 && (
+            <div className="mono" style={{ fontSize: 11, color: done ? C.accent : C.inkMute, letterSpacing: '0.06em', marginTop: 8 }}>
+              {sets}/{target} sets{done ? ' · done' : ' · tap to log a set'}
+            </div>
+          )}
         </div>
       </div>
 
@@ -356,14 +470,20 @@ function Row({ item, done, showVideos, onOpen, onToggle }) {
         </div>
       )}
 
+      {item.bpm && (
+        <div style={{ paddingLeft: 50, marginTop: 24 }}>
+          <Metronome bpm={item.bpm} />
+        </div>
+      )}
+
       {showVideos && item.video && (
         <div style={{ paddingLeft: 50, marginTop: 24 }}>
-          <div style={{ 
-            position: 'relative', width: '100%', 
+          <div style={{
+            position: 'relative', width: '100%',
             paddingBottom: '56.25%', /* 16:9 Aspect Ratio */
             height: 0,
             borderRadius: 12, overflow: 'hidden', background: '#000',
-            boxShadow: '0 4px 20px rgba(0,0,0,0.08)' 
+            boxShadow: '0 4px 20px rgba(0,0,0,0.08)'
           }}>
             <iframe
               key={`${item.id}-${showVideos}`}
@@ -380,7 +500,8 @@ function Row({ item, done, showVideos, onOpen, onToggle }) {
   );
 }
 
-function Detail({ item, done, onBack, onToggle }) {
+function Detail({ item, sets, target, onBack, onRecord, onReset }) {
+  const done = sets >= target;
   return (
     <div className="fade" style={{ minHeight: '100vh' }}>
       <header style={{ padding: '24px 24px 4px' }}>
@@ -398,6 +519,12 @@ function Detail({ item, done, onBack, onToggle }) {
         <div className="mono" style={{ fontSize: 12, color: C.inkSoft, letterSpacing: '0.04em', marginBottom: 28 }}>
           {item.spec}
         </div>
+
+        {item.bpm && (
+          <div style={{ marginBottom: 32 }}>
+            <Metronome bpm={item.bpm} />
+          </div>
+        )}
 
         {item.video && (
           <div style={{ 
@@ -444,21 +571,30 @@ function Detail({ item, done, onBack, onToggle }) {
           </div>
         )}
 
-        <button
-          onClick={onToggle}
-          style={{
-            width: '100%', padding: '17px',
-            background: done ? 'transparent' : C.accent,
-            color: done ? C.accent : C.bg,
-            border: `1.5px solid ${C.accent}`,
-            borderRadius: 999,
-            fontSize: 14, fontWeight: 500,
-            cursor: 'pointer', letterSpacing: '0.02em',
-            transition: 'all 0.15s'
-          }}
-        >
-          {done ? 'Marked complete · undo' : 'Mark complete'}
-        </button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+          <SetButton sets={sets} target={target} onRecord={onRecord} size={44} />
+          <button
+            onClick={onRecord}
+            style={{
+              flex: 1, padding: '17px',
+              background: done ? 'transparent' : C.accent,
+              color: done ? C.accent : C.bg,
+              border: `1.5px solid ${C.accent}`,
+              borderRadius: 999,
+              fontSize: 14, fontWeight: 500,
+              cursor: 'pointer', letterSpacing: '0.02em',
+              transition: 'all 0.15s'
+            }}
+          >
+            {done ? 'All sets done · tap to reset' : `Record set ${sets + 1} of ${target}`}
+          </button>
+        </div>
+        {target > 1 && (
+          <div className="mono" style={{ fontSize: 11, color: C.inkMute, letterSpacing: '0.06em', marginTop: 14, textAlign: 'center' }}>
+            {sets}/{target} sets logged today
+            {sets > 0 && !done && <button onClick={onReset} style={{ background: 'transparent', border: 'none', color: C.inkMute, fontSize: 11, cursor: 'pointer', marginLeft: 10, textDecoration: 'underline', textUnderlineOffset: 3 }}>reset</button>}
+          </div>
+        )}
       </main>
     </div>
   );
