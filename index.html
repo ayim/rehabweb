@@ -45,23 +45,18 @@ const { useState, useEffect } = React;
 
 const PLAN = [
   {
-    key: 'hamstring',
-    title: 'Hamstring',
-    subtitle: 'Medial hamstring strain · 2× per day',
-    items: [
-      { id: 'h-iso', title: 'Hamstring bridge isometric', spec: '4 × 30s · 2× per day', cues: ['Knees bent to 60°', 'Hold steady, no movement'], video: null },
-      { id: 'h-arom', title: 'Active knee extension', spec: '3 × 10 · 2× per day', cues: ['On your back, knees bent', 'Hold the right thigh', 'Slowly extend the knee'], video: null }
-    ]
-  },
-  {
     key: 'workoutA',
     title: 'Non-running day Workout A',
     subtitle: 'Primary drills',
     items: [
-      { id: 'a-goblet', title: 'Goblet squat', spec: '3 × 10 · 40 lb KB · 2s/2s · 1 min rest', cues: ['Hold the kettlebell at chest height', 'Pace: 2 seconds down, 2 seconds up', 'Drive through the full foot, brace the trunk'], video: null },
-      { id: 'a-step', title: 'Step up and over', spec: '3 × 10 · any day', cues: ['Can be done on any day', 'Drive the knee over the foot', 'Control alignment of knee and ankle on the way up and down', 'Right foot points forward, not out'], video: { id: 'hP4jBnUeB18', short: false } },
-      { id: 'a-bsq', title: 'Bulgarian split squat', spec: '3 × 8 · 2× 20 lb · 1 min rest', cues: ['Upright trunk', 'Drive the knee over the foot, pointing forward', 'Maximize knee translation over foot to promote ankle mobility'], video: { id: 'Gpkzq1HuhJ0', short: false } },
-      { id: 'a-calf', title: 'Single-leg calf raise — peroneal focus', spec: '3 × 12 · 25 lb · 30 bpm · 2 RIR · slant board', cues: ['Stand on the slant board (slanty platform)', 'Peroneal focus — drive up through the big-toe side, foot slightly everted', 'Hold the weight on the side of the working leg', 'Match tempo to a 30 bpm metronome', 'Leave 2 reps in reserve'], video: { id: 'YCmLU4JoFac', short: false }, bpm: 30 }
+      { id: 'a-plyo', title: 'Alternating step jumps (plyo)', spec: '3 × 30 reps (total) · short ground contact', cues: ['Alternate legs each jump', 'Land soft and quiet — minimize ground contact time'], video: null },
+      { id: 'a-wgs', title: "World's greatest stretch", spec: '10 reps · each side', cues: ['Dynamic full-body mobility warm-up'], video: null },
+      { id: 'a-9090', title: '90/90 transitions', spec: '10 reps · hip rotation mobility', cues: ['Move slowly and with control between the two hip positions'], video: null },
+      { id: 'a-pry', title: 'Prying squat', spec: '10 lb · 1 min', cues: ['Hold a light weight at chest height', 'Sink into a deep squat and gently rock to open the hips and ankles'], video: null },
+      { id: 'a-back-squat', title: 'Back squat', spec: '3 × 8 · ~60 lb · 1 min rest · pace 3s/1s', cues: ['3 second lowering, 1 second pause', 'Explosive on the way up'], video: null },
+      { id: 'a-sldl', title: 'Single-leg deadlift, supported', spec: '3 × 8 · 1 DB 53 lb · 1 min rest · pace 3s/1s', cues: ['Use a light support for balance only', 'Hinge from the hip, keep back flat', '3 second lowering, explosive on the way up', 'Decrease weight if you can move fast with good control'], video: { id: 'Ex_pPwkzS1k', short: true } },
+      { id: 'a-calf-bb', title: 'Single-leg calf raise', spec: '3 × 6–7 · BB 55–65 lb · 60 bpm', cues: ['Match tempo to a 60 bpm metronome'], video: null, bpm: 60 },
+      { id: 'a-peroneal', title: 'Single-leg raise — peroneal focus, slanted', spec: '3 × 8 · 20 lb', cues: ['Stand on the slant board', 'Push through the big toe at the top of the raise'], video: { id: 'YCmLU4JoFac', short: false } }
     ]
   },
   {
@@ -69,20 +64,24 @@ const PLAN = [
     title: 'Non-running day Workout B',
     subtitle: 'Primary drills',
     items: [
-      { id: 'b-carry', title: 'Loaded carry march', spec: '4 × 45s on / 45s rest · 2× 63 lb', cues: ['Maintain upright posture and steady cadence', 'Trunk braced throughout'], video: { id: 'z4uPjkmWxSE', short: false } },
-      { id: 'b-step', title: 'Step up and over', spec: '3 × 10 · any day', cues: ['Can be done on any day', 'Drive the knee over the foot', 'Control alignment of knee and ankle'], video: { id: 'hP4jBnUeB18', short: false } },
-      { id: 'b-sldl', title: 'Single-leg deadlift, supported', spec: '3 × 8 · 1 DB · 1 min rest · pause', cues: ['Use a light support for balance only', 'Hinge from the hip, keep back flat', 'Slow eccentric — pause at the bottom'], video: { id: 'Ex_pPwkzS1k', short: true } },
-      { id: 'b-calf', title: 'Single-leg calf raise — peroneal focus', spec: '3 × 12 · 25 lb · 30 bpm · 2 RIR · slant board', cues: ['Stand on the slant board (slanty platform)', 'Peroneal focus — drive up through the big-toe side, foot slightly everted', 'Hold the weight on the side of the working leg', 'Match tempo to a 30 bpm metronome', 'Leave 2 reps in reserve'], video: { id: 'YCmLU4JoFac', short: false }, bpm: 30 }
+      { id: 'b-plyo', title: 'Alternating step jumps (plyo)', spec: '3 × 30 reps (total) · short ground contact', cues: ['Alternate legs each jump', 'Land soft and quiet — minimize ground contact time'], video: null },
+      { id: 'b-wgs', title: "World's greatest stretch", spec: '10 reps · each side', cues: ['Dynamic full-body mobility warm-up'], video: null },
+      { id: 'b-9090', title: '90/90 transitions', spec: '10 reps · hip rotation mobility', cues: ['Move slowly and with control between the two hip positions'], video: null },
+      { id: 'b-hex', title: 'Hex bar deadlift', spec: '3 × 8 · 153 lb · 2 RIR · pace 3s/1s', cues: ['3 second lowering, explosive on the way up', 'Leave 2 reps in reserve'], video: null },
+      { id: 'b-bsq', title: 'Bulgarian split squat', spec: '3 × 8 · 2× 20 lb · 1 min rest · pace 3s/1s', cues: ['Upright trunk', '3 second lowering, explosive on the way up'], video: { id: 'Gpkzq1HuhJ0', short: false } },
+      { id: 'b-calf-bb', title: 'Single-leg calf raise', spec: '3 × 6–7 · BB 55–65 lb · 60 bpm', cues: ['Match tempo to a 60 bpm metronome'], video: null, bpm: 60 },
+      { id: 'b-peroneal', title: 'Single-leg raise — peroneal focus, slanted', spec: '3 × 8 · 20 lb', cues: ['Stand on the slant board', 'Push through the big toe at the top of the raise'], video: { id: 'YCmLU4JoFac', short: false } }
     ]
   },
   {
     key: 'rehab',
-    title: 'Ankle',
-    subtitle: 'Rehab drills · 3–4× per week',
+    title: 'Rehab',
+    subtitle: 'Non-running or running days · 3–4× per week',
     items: [
-      { id: 'r-mobil', title: 'Ankle dorsiflexion mobilization', spec: '3 × 10 · resistance band', cues: ['Place the resistance band at the crease of the ankle', 'Drive the knee forward over the toes'], video: { id: '5jgUBrI-CpM', short: true } },
+      { id: 'r-mobil', title: 'Ankle dorsiflexion self-mobilization (band)', spec: '3 × 10 · resistance band', cues: ['Place the band at the crease of the ankle', 'Drive the knee forward over the toes'], video: { id: '5jgUBrI-CpM', short: true } },
       { id: 'r-stretch', title: 'Gastrocnemius stretch', spec: '2 min · right leg only', cues: ['Lean against a wall, foot pointing straight forward', 'Push forefoot into the ground for 30 seconds', 'Then attempt to lift the foot for 30 seconds', 'Repeat for the full 2 minutes'], video: { id: '3_ZrG8PHKrk', short: false } },
-      { id: 'r-dowel', title: 'Dorsiflexion + eversion with dowel', spec: 'Per coach guidance', cues: ['Drive the knee over the pinky toe', 'Optional: place a small Naboso wedge under the heel, wide side out'], video: { id: 'ZRepfDfgPCs', short: false } }
+      { id: 'r-dowel', title: 'Dorsiflexion + eversion with dowel', spec: 'Per coach guidance', cues: ['Drive the knee over the pinky toe', 'Optional: place a small Naboso wedge under the heel, wide side out'], video: { id: 'ZRepfDfgPCs', short: false } },
+      { id: 'r-plank', title: 'Modified side plank + SLR abduction', spec: '3 × 10–12 · 30s rest', cues: ['Modified side plank position with a straight-leg raise abduction'], video: null }
     ]
   }
 ];
@@ -251,7 +250,7 @@ function App() {
       </main>
       <footer style={{ padding: '40px 24px 24px', textAlign: 'center' }}>
         <div className="mono" style={{ fontSize: 9, letterSpacing: '0.2em', textTransform: 'uppercase', color: C.inkMute }}>
-          NYC marathon · ankle + hamstring rehab · base build
+          NYC marathon · ankle rehab + strength · base build
         </div>
       </footer>
     </div>
